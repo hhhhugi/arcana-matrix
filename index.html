@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Звезда полная</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#fff;color:#000;min-height:100vh;display:flex;flex-direction:column;align-items:center;position:relative}
+
+.card3{display:flex;justify-content:center;align-items:center;padding:60px 20px}
+.card{padding:38px 36px;border-radius:10px;box-shadow:0 4px 60px rgba(0,0,0,0.13);background:#f9f9f9;display:flex;flex-direction:column;align-items:center;gap:20px;min-width:300px}
+.card input{font-size:2em;font-family:'Inter',sans-serif;border:none;border-bottom:2px solid #000;border-radius:0;width:220px;text-align:center;background:transparent;padding:4px 0;outline:none}
+.card input::placeholder{color:#000;opacity:0.5}
+.calc-btn{display:none;padding:13px 36px;font-size:1em;font-family:'Inter',sans-serif;background:#850117;color:white;border:none;border-radius:6px;cursor:pointer;margin-top:4px}
+.calc-btn:hover{background:#6a0113}
+.calc-btn.visible{display:block}
+
+.tabcont{display:none;flex-direction:column;align-items:center;width:100%;max-width:1200px;padding:0 16px 60px}
+.tabcont.visible{display:flex}
+
+.circle-container{display:flex;justify-content:center;align-items:center;width:90vmin;height:90vmin;position:relative}
+.circle{position:relative;width:100%;height:100%;border-radius:50%;border:0.25vmin solid #000}
+.center-image{position:absolute;top:48%;left:51%;width:70%;height:70%;transform:translate(-50%,-50%)}
+
+.outer-point{position:absolute;background-color:black;border-radius:50%}
+.outer-point.small{width:0.55vmin;height:0.55vmin;margin-left:-1px;margin-top:-1px}
+.outer-point.large{width:1vmin;height:1vmin;background:#850117}
+.ring-label{position:absolute;font-size:1vmin;font-weight:bold;color:#000;transform:translate(-50%,-50%);white-space:nowrap}
+.ring-label.large{font-size:1.5vmin}
+.ring-number{position:absolute;color:#000;transform:translate(-50%,-50%);white-space:nowrap;cursor:pointer}
+.ring-number:hover{color:#850117;font-weight:bold}
+.ring-number.large{font-size:1.5vmin;font-weight:bold;color:#850117}
+.ring-number.small{font-size:1vmin}
+
+.star-point{
+  position:absolute;width:6vmin;height:6vmin;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:bold;font-size:2.2vmin;
+  background:#E5E5E5;color:rgba(132,0,22,1);
+  opacity:0;animation:fadeIn 1s forwards;
+  cursor:pointer;outline:0.6vmin solid rgba(229,229,229,0.5);
+  user-select:none;font-family:'Inter',sans-serif;
+  transition:transform 0.15s;
+}
+.star-point:hover{transform:scale(1.15)}
+@keyframes fadeIn{to{opacity:1}}
+
+.star-point1{background:rgb(132,0,22);color:white;outline:0.9vmin solid rgba(132,0,22,0.5)}
+.star-point2{background:rgba(220,2,39,1);color:white;width:7vmin;height:7vmin;font-size:3.1vmin;outline:0.9vmin solid rgba(220,2,39,0.5)}
+.star-point3{background:rgb(132,0,22);color:white;outline:0.9vmin solid rgba(132,0,22,0.5)}
+.star-point4{background:rgb(132,0,22);color:white;outline:0.9vmin solid rgba(132,0,22,0.5)}
+.star-point7{background:#0B57EA;color:white;outline:0.9vmin solid rgba(11,87,234,0.5)}
+.star-point8{background:rgba(11,170,234,1);color:white;outline:0.9vmin solid rgba(11,170,234,0.5)}
+.star-point9{background:rgba(9,207,41,1);color:white;outline:0.9vmin solid rgba(9,207,41,0.5);z-index:2}
+.star-point10{background:rgba(238,231,21,1);color:white;outline:0.9vmin solid rgba(238,231,21,0.5);z-index:2}
+.star-point11{background:rgba(241,123,36,1);color:white;outline:0.9vmin solid rgba(241,123,36,0.5);z-index:2}
+
+#sp1{animation-delay:1.2s}#sp2{animation-delay:2.2s}#sp3{animation-delay:1.4s}#sp4{animation-delay:2.6s}
+#sp5{animation-delay:1.8s}#sp6{animation-delay:4s}#sp7{animation-delay:4.2s}#sp8{animation-delay:4.4s}
+#sp9{animation-delay:4.6s}#sp10{animation-delay:4.8s}#sp11{animation-delay:5s}
+#sp12{animation-delay:3s}#sp13{animation-delay:3.2s}#sp14{animation-delay:3.4s}
+#sp15{animation-delay:3.8s}#sp16{animation-delay:3.6s}
+#sp17,#sp18,#sp19,#sp20,#sp21,#sp22,#sp23,#sp24,#sp25,#sp26,#sp27{animation-delay:3s}
+
+/* HOVER TOOLTIP — appears near cursor, no fixed/overlay needed */
+.tt{
+  display:none;position:absolute;z-index:9999;
+  background:#fff;border:1px solid #ddd;border-radius:10px;
+  padding:18px 20px;max-width:360px;min-width:240px;
+  box-shadow:0 6px 32px rgba(0,0,0,0.18);
+  font-size:13px;line-height:1.55;pointer-events:none;
+}
+.tt.visible{display:block}
+.tt h4{font-size:14px;font-weight:700;color:#850117;margin-bottom:10px}
+.tt .sec{font-weight:600;margin:8px 0 4px;font-size:12px;color:#444}
+.tt ul{padding-left:16px;margin:0}
+.tt ul li{margin-bottom:3px}
+
+#text-container{text-align:center;margin:30px auto;max-width:700px;padding:0 20px;font-size:0.95em;line-height:1.7}
+#text-container ul{text-align:left}
+
+.tab-content{display:none;flex-wrap:wrap;padding-bottom:7vmin;border-radius:5px;align-items:center;max-width:1200px;justify-content:space-around;width:100%}
+.tab-content.active{display:flex}
+.tab-buttons{display:flex;gap:10px;margin:24px 0 10px;flex-wrap:wrap;justify-content:center}
+.tab-btn{padding:8px 18px;border:1px solid #ccc;border-radius:6px;background:#f1f1f1;cursor:pointer;font-family:'Inter',sans-serif;font-size:0.9em}
+.tab-btn.active{background:#850117;color:white;border-color:#850117}
+.tab-in{position:relative;display:flex;margin:0 40px;justify-content:center;align-items:center;flex-direction:column}
+.tab-in h2{text-align:center;font-size:1em;margin-bottom:8px}
+.tab-in .aaa{width:36vmin;margin-top:14vmin}
+.tab-in .star-point{font-weight:500;border:none;background-color:transparent;font-size:1.9em}
+
+#tab2 .star-point,#tab3 .star-point{outline:none}
+#tab2 .star-point5{background:#E5E5E5;color:rgba(132,0,22,1)}
+#tab3 .star-point21{background:rgb(132,0,22);width:3vmin;font-size:1.6vmin;height:3vmin;outline:0.5vmin solid rgba(132,0,22,0.5);color:white}
+#tab3 .star-point7{background:#0B57EA;width:4vmin;height:4vmin;font-size:2vmin;outline:0.6vmin solid rgba(11,87,234,0.5);color:white}
+#tab3 .star-point8{width:4vmin;height:4vmin;background:rgba(11,170,234,1);font-size:2vmin;outline:0.6vmin solid rgba(11,170,234,0.5);color:white}
+#tab3 .star-point9{width:4vmin;height:4vmin;background:rgba(9,207,41,1);font-size:2vmin;outline:0.6vmin solid rgba(9,207,41,0.5);color:white;z-index:2}
+#tab3 .star-point10{width:4vmin;height:4vmin;background:rgba(238,231,21,1);font-size:2vmin;outline:0.6vmin solid rgba(238,231,21,0.5);color:white;z-index:2}
+#tab3 .star-point11{width:4vmin;height:4vmin;background:rgba(241,123,36,1);font-size:2vmin;outline:0.6vmin solid rgba(241,123,36,0.5);color:white;z-index:2}
+#tab3 .star-point5{left:2vmin!important;width:5vmin!important;height:5vmin!important;top:57%!important;font-size:2vmin!important;background:#C611DB;outline:0.7vmin solid rgba(198,17,219,0.5);color:white}
+#tab3 .star-point2{left:93.3%!important;width:5vmin!important;height:5vmin!important;top:57%!important;font-size:2vmin!important;background:rgba(220,2,39,1);outline:0.7vmin solid rgba(220,2,39,0.5);color:white}
+.star-point-new1,.star-point-new2,.star-point-new3{width:3vmin!important;font-size:1.6vmin!important;height:3vmin!important;background:linear-gradient(130deg,rgba(132,0,22,1) 0%,rgba(132,0,22,1) 100%)!important;outline:0.5vmin solid rgba(132,0,22,0.5)!important;color:white!important}
+
+@media screen and (max-width:500px){
+  .tab-in .aaa{width:44vmin!important;margin-top:16vmin;margin-bottom:5vmin}
+  .tab-content{flex-direction:column}
+  #tab3 .star-point7{width:9vmin!important;height:9vmin!important;font-size:4vmin!important;top:47%!important;left:16%!important}
+  #tab3 .star-point8{width:9vmin!important;height:9vmin!important;font-size:4vmin!important;top:47%!important;left:29.7%!important}
+  .star-point-new1,.star-point-new2,.star-point-new3{width:9vmin!important;font-size:3.9vmin!important;height:9vmin!important}
+  #tab3 .star-point21{width:9vmin!important;font-size:3.9vmin!important;height:9vmin!important;top:83.5%!important}
+}
+</style>
+</head>
+<body>
+
+<div class="card3" id="inputSection">
+  <div class="card">
+    <input type="text" placeholder="дд.мм.гггг" id="birthdate" maxlength="10" inputmode="numeric"/>
+    <button class="calc-btn" id="calcBtn" onclick="calculate()">Рассчитать</button>
+  </div>
+</div>
+
+<div class="tabcont" id="mainContent">
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="showTab('tab1',this)">Звезда</button>
+    <button class="tab-btn" onclick="showTab('tab2',this)">Сферы</button>
+    <button class="tab-btn" onclick="showTab('tab3',this)">Дополнительно</button>
+  </div>
+
+  <div class="tab-content active" id="tab1">
+    <div class="circle-container">
+      <div class="circle" id="circle">
+        <img src="https://numschool-web.ru/zvezda/234234222223.svg" alt="" class="center-image"/>
+        <div class="star-point star-point1" id="sp1" style="left:46.8%;top:12%" data-key="month"></div>
+        <div class="star-point star-point2" id="sp2" style="left:82%;top:39%" data-key="year"></div>
+        <div class="star-point star-point3" id="sp3" style="left:66%;top:76%" data-key="sp3"></div>
+        <div class="star-point star-point4" id="sp4" style="left:26%;top:76.1%" data-key="sp4"></div>
+        <div class="star-point" id="sp5" style="left:13%;top:39%" data-key="day"></div>
+        <div class="star-point" id="sp6" style="left:46.4%;top:49.6%" data-key="sp6"></div>
+        <div class="star-point star-point7" id="sp7" style="left:28.5%;top:38%" data-key="sp7"></div>
+        <div class="star-point star-point8" id="sp8" style="left:37.5%;top:38%" data-key="sp8"></div>
+        <div class="star-point star-point9" id="sp9" style="left:46.5%;top:38%" data-key="sp9"></div>
+        <div class="star-point star-point10" id="sp10" style="left:55.5%;top:38%" data-key="sp10"></div>
+        <div class="star-point star-point11" id="sp11" style="left:65%;top:38%" data-key="sp11"></div>
+        <div class="star-point" id="sp12" style="left:41.1%;top:49.3%;width:3.5vmin;height:3.5vmin;font-size:1.6vmin" data-key="sp12"></div>
+        <div class="star-point" id="sp13" style="left:47.9%;top:44.1%;width:3.5vmin;height:3.5vmin;font-size:1.6vmin" data-key="sp13"></div>
+        <div class="star-point" id="sp14" style="left:54.6%;top:49.3%;width:3.5vmin;height:3.5vmin;font-size:1.6vmin" data-key="sp14"></div>
+        <div class="star-point" id="sp15" style="left:43.5%;top:56.5%;width:3.5vmin;height:3.5vmin;font-size:1.6vmin" data-key="sp15"></div>
+        <div class="star-point" id="sp16" style="left:52%;top:56.7%;width:3.5vmin;height:3.5vmin;font-size:1.6vmin" data-key="sp16"></div>
+        <div class="star-point" id="sp17" style="left:39%;top:30%;width:4vmin;height:4vmin;font-size:1.8vmin" data-key="sp17"></div>
+        <div class="star-point" id="sp18" style="left:55.8%;top:30%;width:4vmin;height:4vmin;font-size:1.8vmin" data-key="sp18"></div>
+        <div class="star-point" id="sp19" style="left:30.6%;top:56.8%;width:4vmin;height:4vmin;font-size:1.8vmin" data-key="sp19"></div>
+        <div class="star-point" id="sp20" style="left:64.8%;top:56.8%;width:4vmin;height:4vmin;font-size:1.8vmin" data-key="sp20"></div>
+        <div class="star-point" id="sp21" style="left:47.5%;top:68.7%;width:4vmin;height:4vmin;font-size:1.8vmin" data-key="sp21"></div>
+        <div class="star-point" id="sp22" style="left:26.4%;top:52%;width:3vmin;height:3vmin;font-size:1.4vmin" data-key="sp22"></div>
+        <div class="star-point" id="sp23" style="left:29.5%;top:64%;width:3vmin;height:3vmin;font-size:1.4vmin" data-key="sp23"></div>
+        <div class="star-point" id="sp24" style="left:40.8%;top:72.8%;width:3vmin;height:3vmin;font-size:1.4vmin" data-key="sp24"></div>
+        <div class="star-point" id="sp25" style="left:54.7%;top:72.8%;width:3vmin;height:3vmin;font-size:1.4vmin" data-key="sp25"></div>
+        <div class="star-point" id="sp26" style="left:65.8%;top:64%;width:3vmin;height:3vmin;font-size:1.4vmin" data-key="sp26"></div>
+        <div class="star-point" id="sp27" style="left:71.2%;top:52.4%;width:3vmin;height:3vmin;font-size:1.4vmin" data-key="sp27"></div>
+      </div>
+    </div>
+    <div id="text-container"></div>
+  </div>
+
+  <div class="tab-content" id="tab2">
+    <div class="tab-in">
+      <h2>Сфера личности</h2>
+      <img src="https://numschool-web.ru/wp-content/uploads/2024/07/w23231-1.svg" class="aaa" alt=""/>
+      <div class="star-point star-point5" style="left:41.4%;top:18.4%" data-key="day"></div>
+      <div class="star-point" style="left:11.4%;top:51.2%" data-key="sp22"></div>
+      <div class="star-point star-point7" style="left:71.4%;top:51.2%" data-key="sp7"></div>
+      <div class="star-point" style="left:-7.4%;top:80%" data-key="sp19"></div>
+      <div class="star-point star-point8" style="left:91%;top:80%" data-key="sp8"></div>
+      <div class="star-point" style="left:41.4%;top:83.4%" data-key="sp12"></div>
+      <div class="star-point" style="left:32%;top:48.2%" data-key="sp28"></div>
+      <div class="star-point" style="left:52%;top:48.2%" data-key="sp29"></div>
+    </div>
+    <div class="tab-in">
+      <h2>Сфера духовности</h2>
+      <img src="https://numschool-web.ru/wp-content/uploads/2024/07/w23231-1.svg" class="aaa" alt=""/>
+      <div class="star-point star-point1" style="left:41.4%;top:18.4%" data-key="month"></div>
+      <div class="star-point" style="left:71.4%;top:51.2%" data-key="sp18"></div>
+      <div class="star-point" style="left:11.4%;top:51.2%" data-key="sp17"></div>
+      <div class="star-point star-point8" style="left:-7.4%;top:80%" data-key="sp8"></div>
+      <div class="star-point star-point10" style="left:91%;top:80%" data-key="sp10"></div>
+      <div class="star-point star-point9" style="left:41.4%;top:83.4%" data-key="sp9"></div>
+      <div class="star-point" style="left:32%;top:48.2%" data-key="sp30"></div>
+      <div class="star-point" style="left:52%;top:48.2%" data-key="sp31"></div>
+    </div>
+    <div class="tab-in">
+      <h2>Сфера денег</h2>
+      <img src="https://numschool-web.ru/wp-content/uploads/2024/07/w23231-1.svg" class="aaa" alt=""/>
+      <div class="star-point star-point2" style="left:41.4%;top:18.4%" data-key="year"></div>
+      <div class="star-point star-point11" style="left:9.4%;top:51.2%" data-key="sp11"></div>
+      <div class="star-point" style="left:75.4%;top:51.2%" data-key="sp27"></div>
+      <div class="star-point star-point10" style="left:-7.4%;top:80%" data-key="sp10"></div>
+      <div class="star-point" style="left:97%;top:80%" data-key="sp20"></div>
+      <div class="star-point" style="left:41.4%;top:83.4%" data-key="sp14"></div>
+      <div class="star-point" style="left:32%;top:48.2%" data-key="sp32"></div>
+      <div class="star-point" style="left:52%;top:48.2%" data-key="sp33"></div>
+    </div>
+    <div class="tab-in">
+      <h2>Сфера отношений</h2>
+      <img src="https://numschool-web.ru/wp-content/uploads/2024/07/w23231-1.svg" class="aaa" alt=""/>
+      <div class="star-point star-point3" style="left:41.4%;top:18.4%" data-key="sp3"></div>
+      <div class="star-point" style="left:11.4%;top:51.2%" data-key="sp26"></div>
+      <div class="star-point" style="left:74.4%;top:51.2%" data-key="sp25"></div>
+      <div class="star-point" style="left:-7.4%;top:80%" data-key="sp20"></div>
+      <div class="star-point" style="left:91%;top:80%" data-key="sp21"></div>
+      <div class="star-point" style="left:41.4%;top:83.4%" data-key="sp16"></div>
+      <div class="star-point" style="left:32%;top:48.2%" data-key="sp34"></div>
+      <div class="star-point" style="left:52%;top:48.2%" data-key="sp35"></div>
+    </div>
+    <div class="tab-in">
+      <h2>Сфера здоровья</h2>
+      <img src="https://numschool-web.ru/wp-content/uploads/2024/07/w23231-1.svg" class="aaa" alt=""/>
+      <div class="star-point star-point4" style="left:41.4%;top:18.4%" data-key="sp4"></div>
+      <div class="star-point" style="left:11.4%;top:51.2%" data-key="sp24"></div>
+      <div class="star-point" style="left:74.4%;top:51.2%" data-key="sp23"></div>
+      <div class="star-point" style="left:-7.4%;top:80%" data-key="sp21"></div>
+      <div class="star-point" style="left:91%;top:80%" data-key="sp19"></div>
+      <div class="star-point" style="left:41.4%;top:83.4%" data-key="sp15"></div>
+      <div class="star-point" style="left:32%;top:48.2%" data-key="sp36"></div>
+      <div class="star-point" style="left:52%;top:48.2%" data-key="sp37"></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab3">
+    <div class="tab-in">
+      <h2>Роковая ошибка</h2>
+      <img src="https://numschool-web.ru/zvezda/48097222.svg" class="aaa" alt="" style="width:100%"/>
+      <div class="star-point star-point21" style="top:88.5%;left:43.9%" data-key="sp21"></div>
+    </div>
+    <div class="tab-in">
+      <h2>Чакры</h2>
+      <img src="https://numschool-web.ru/zvezda/48097222.svg" class="aaa" alt="" style="width:100%"/>
+      <div class="star-point" style="left:-8%;width:5vmin;height:5vmin;top:57%;font-size:2vmin;background:#C611DB;outline:0.7vmin solid rgba(198,17,219,0.5);color:white" data-key="day"></div>
+      <div class="star-point star-point7" style="left:12.8%;top:55%" data-key="sp7"></div>
+      <div class="star-point star-point8" style="left:28%;top:55%" data-key="sp8"></div>
+      <div class="star-point star-point9" style="left:43.2%;top:55%" data-key="sp9"></div>
+      <div class="star-point star-point10" style="left:58.4%;top:55%" data-key="sp10"></div>
+      <div class="star-point star-point11" style="left:74%;top:55%" data-key="sp11"></div>
+      <div class="star-point star-point2" style="left:93.3%;width:5vmin;height:5vmin;top:57%;font-size:2vmin;background:rgba(220,2,39,1);outline:0.7vmin solid rgba(220,2,39,0.5);color:white" data-key="year"></div>
+    </div>
+    <div class="tab-in">
+      <h2>Код души</h2>
+      <img src="https://numschool-web.ru/zvezda/48097222.svg" class="aaa" alt="" style="width:100%"/>
+      <div class="star-point star-point-new1" style="left:35%;top:68%" data-key="new1"></div>
+      <div class="star-point star-point-new2" style="left:44%;top:68%" data-key="new2"></div>
+      <div class="star-point star-point-new3" style="left:53.8%;top:68%" data-key="new3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating tooltip div — positioned by JS on mousemove -->
+<div class="tt" id="tooltip"></div>
+
+<script>
+// ─── ENERGY DESCRIPTIONS 1–22 ─────────────────────────────────────────────
+// Edit the text here. Each key maps to an energy number.
+const ENERGY_DESC = {
+  "1": {
+    "title": "1 АРКАН — Ид шидтэн",
+    "plus": [
+      "Хурц ухаан, аливаа зүйлийн мөн чанарыг танин ойлгох чадвар.",
+      "Адал явдал, нээлтээр дүүрэн тод амьдралыг эрхэмлэнэ; аялж, олон танилтай. Эрх чөлөөг нэн дээдэлнэ.",
+      "Шинэчлэгч хараа, манлайлах чанар: санаагаараа бусдыг асааж, дагуулж чадна.",
+      "Үгээ хүчтэй, уран илэрхийлдэг; үгийн эзэн.",
+      "Өөртөө итгэлтэй, зорилгоо тодорхой, түүндээ бүхнээ зорино.",
+      "Оптимист, идэвхтэй, адалч, зохион бүтээгч; шинэ төслийг эхлүүлэхдээ амархан.",
+      "Нийгмийн хувьд өөрийн бие даасан хэрэгжилт чухал; дарамт тэсвэрлэхгүй, тэгш түвшинд хамтарч ажиллана.",
+      "Өөртөө, бусдад зам нээж явах хувь тавилан.",
+      "Бодлын, үгийн ид шидтэй; энерги чиглүүлсэн газарт нь бодит байдал бүтнэ.",
+      "«Бүхнийг чаддаг гар» — бусдад туслах, ямар ч ажлыг барьж авч амжилт гаргана."
+    ],
+    "minus": [
+      "Дотоод хүч, эрх мэдрэмж нь омогшил руу хэлбийж болно; өөрийгөө л үнэлж, бусдыг удаан, аймхай гэж үзнэ.",
+      "Эгоизм; бусдыг дарангуйлж, өөрийн хүсэлд захируулна.",
+      "Өөрийгөө хэт үнэлэх, ихэмсэглэл.",
+      "Хүмүүсээс зай барих, дотроо нээхгүй эсвэл нээж буй дүр үзүүлнэ.",
+      "Наймаалцах хэв маяг: өөрийн дүрмийг тулгана; багийн тоглолтод бэрх.",
+      "Үгийн эзэн чадвараа манипуляц, гуйвуулалт болгож ашиглах.",
+      "Сонсож чадахгүй, өөр өнцөг хүлээн авахгүй.",
+      "Их нөөцтэй атлаа өөртөө эргэлзэж, манлайлахад итгэдэггүй.",
+      "Өөрийгөө олоход бэрхшээж, «үл танигдсан суут» гэх дотоод комплекс.",
+      "Шүүмжлэлд эмзэг, өрсөлдөөн хүлээн зөвшөөрөхгүй.",
+      "Шинэ, үл мэдэхээс айх.",
+      "Хариуцлагаас зайлсхийх, залхуурал, зорилгогүй байх.",
+      "Эхлүүлсэнээ дуусгалгүй орхих."
+    ]
+  },
+  "2": {
+    "title": "2 АРКАН — Дээд Санваартан Эмэгтэй",
+    "plus": [
+      "Дипломат, зөрчлийг зөөлрүүлж, хурц буланг өнгөрүүлж чадна.",
+      "Далд мэдрэмж, хараа: нүдэнд үл үзэгдэхийг олж харна.",
+      "Ажигч, нууцлаг, болгоомжтой; оньсого мэт зүйлсэд татагдана.",
+      "Хүчтэй эмпати: бусдын өвдөлтийг мэдэрч, зөөлнөөр эдгээхийг хүснэ.",
+      "Манлайлахыг хүсдэггүй; сүүдэрт, нарийн удирдлагаар үйл явцыг хүссэнээрээ эргүүлнэ; хэрүүл тэмцлээс зай авна.",
+      "Дотоод бясалгалын төлөвөө эрхэмлэж, хувийн орон зайгаа нандинчилна.",
+      "Хүмүүсийг тэгш байр сууриас харна.",
+      "Зөөлөн, дарамтгүйгээр туслах хүсэл.",
+      "Эмэгтэйлэг, нарийн, татахуйц.",
+      "«Алба хаах» — мэдлэг дамжуулах, асарч хамгаалах, халамжлах.",
+      "Гаднаа нам гүм ч дотроо дүрслэх, зүйрлэх сэтгэлгээ өндөр хөгжсөн.",
+      "Байгаль, амьтан, ургамлаар цэнэглэгдэнэ; гэрийн дулаан уур амьсгалыг эрхэмлэнэ."
+    ],
+    "minus": [
+      "Итгэлгүй, хоёрдмол, тогтворгүй, эрх дураараа, зөрчилдөмтгий, шийдэмгий бус.",
+      "Пассив шинж давамгай: мөрөөдөл, кино, дурсамжинд амьдарч, бодит амьдралд хөдөлгөөнгүй.",
+      "Төлөвлөгөө бодлоороо дуусна; мэдлэг нь өнгөц.",
+      "Дотоод бухимдал, хаалттай байдал, үл итгэх, бусдад хайхрамжгүй хандлага.",
+      "Хов жив, шүүмжлэл, өөрт ашигтайгаар гуйвуулах, хоосон яриа, тэвчээргүй байдал, овжин манипуляц.",
+      "Чимээгүй байж чаддаггүй: радио/ТВ/утсыг үргэлж асаалттай байлгах хэрэгцээ.",
+      "Шүүмжлэлтэй сэтгэлгээ дутмаг.",
+      "«Би үнэхээр тэнцэхгүй» — эмэгтэйлгээ үгүйсгэх; хайр, анхаарал, бэлгийг хүлээн авахын айдас.",
+      "Эхийн айдас; эхтэй болон ахмад эмэгтэйчүүдтэй зөрчил.",
+      "Хүүхдүүдтэй харилцаанд тэнцвэргүй — хэт эсвэл hypo-хариуцлага.",
+      "«Мөнхийн зарц» — өөрийгөө умартан, бусдад цаг хүчээ барна.",
+      "Зөн совин, мэргэн эмэгтэйн тусламжийг няцаах.",
+      "Сэтгэлээ мэдрэхгүй, эмоцоо хянаж чадахгүй; истерик, драм, импульс.",
+      "Байгаль, амьтдыг үл хүндэтгэх; эрүүл мэнд, хооллолтыг үл тоох.",
+      "«Зөв охин»-ы комплекс: ичгүүр, гэмшилд амьдрах.",
+      "Мэтгэлзүйн түгшүүр, өөртөө шургах."
+    ]
+  },
+  "3": {
+    "title": "3 АРКАН — Хатан Хаан",
+    "plus": [
+      "Өөрийгөө хайрлах, бие, гэр, хүүхдэдээ халамж тавих төрөлх чадвар.",
+      "Айл гэрийн эзэгтэй, эмх цэгцтэй, халамжтай.",
+      "Хайр, чинээлэг байдал, магтаалыг «хүлээн авах» мэдрэмж.",
+      "Үнэнч эхийн зүрх; хүүхэд, ажил, санаанд үр өгөөжтэй.",
+      "Өөрийгөө арчлах, гоо сайханд тэмүүлэх; загвар, чимэглэлд дуртай.",
+      "Сэтгэл татам, ялдам, эмэгтэйлэг.",
+      "Удирдах, чиглүүлэх, өдөөх, даалгавар хуваарилах; цагийг өөртөө гаргана.",
+      "Бие даасан, хараат бус; карьераар өөрийгөө хэрэгжүүлэх хүсэлтэй.",
+      "Бусдад туслах эрүүл хэрэгцээ; эмэгтэйчүүдийг сайн ойлгож, зохицно.",
+      "Эр хүнээ Император — хариуцлагатай, эрх мэдэлтэйг сонгоно.",
+      "Хүүхдүүдтэйгээ эв зохицолтой, өөрийгөө мартахгүй.",
+      "Эмэгтэйчүүдтэй хамт байхдаа тухтай; анхаарал халамжаар хүрээлүүлнэ (эрэгтэй).",
+      "Айл гэрийн ажилд сайн, эцэг хүний оролцоо өндөр (эрэгтэй).",
+      "Найдвартай нөхөр, тогтвортой байдлыг өгнө; бизнес, карьертаа амжилттай (эрэгтэй)."
+    ],
+    "minus": [
+      "Хэт хяналт, дарамт; бүхнийг өөр дээрээ үүрэх, командлах.",
+      "Эрийгөө нугалж «ээж» болж дарангуйлна.",
+      "Дамжуулах чадвар сул; «бүгдийг өөрөө» хийж ядарна.",
+      "Хүүхдийг өөртөө уях; эрийн хүүхэд хүмүүжилд оролцоог хязгаарлах.",
+      "Эмэгтэйчүүдтэй үл ойлголцол, төсөөлөлтэй үзэл.",
+      "Эмэгтэйлгээ үгүйсгэж, арчаагүй байдал; эсвэл «хэт гоёл» — хэтрүүлэг.",
+      "Эрүүл бус эгоизм, өөрийгөө л бодох.",
+      "Хэврэг сэтгэл, гомдомтгой, эмзэг.",
+      "Түрэмгий, дарангуйлагч, хэрүүлч.",
+      "Материалд хэт хэлбийх: мөнгө шүтэх, ашиг харсан харилцаа.",
+      "Ганцаардлын айдас, хэт халамж-хяналт; бүх амьдрал нь хүүхдүүд рүү урсах.",
+      "Пассив, залхуу; гэр орон эмх замбараагүй; асуудлыг «идэж» дарна.",
+      "Зөөлөн, шийдэмгий бус, хариуцлагаас зугтах (эрэгтэй).",
+      "Гэр бүлд «эмэгтэй байр» эзэлж болно; шийдвэрээс зугтана (эрэгтэй).",
+      "Эмэгтэйчүүдийг үл хүлээн зөвшөөрөх, айдас, уур хилэн тээх (эрэгтэй)."
+    ]
+  },
+  "4": {
+    "title": "4 АРКАН — Эзэн Хаан",
+    "plus": [
+      "Найдвартай хамтрагч, нөхөр; тогтвортой байдлыг өгнө.",
+      "Гэртээ, ажлаа эзэн шиг авч явна; бэх суурьтай хүн.",
+      "Ан, мод тарина, байшин барина, хүүхэд өсгөнө — тэрний тэргүүлэх зорилтууд.",
+      "Бизнес, карьертаа амжилттай; хурдан шийдэж, үйлдэлд орно.",
+      "«Хэлсэн бол хийсэн» зарчимтай, амлалтандаа үнэнч.",
+      "Логик сэтгэлгээтэй, стратеги төлөвлөлт сайтай (эмэгтэй).",
+      "Эрчүүдийг ойлгож, тэдний дунд тухтай, сайн зохицно (эмэгтэй).",
+      "Өөрийгөө хангах чадвартай, хариуцлагатай (эмэгтэй).",
+      "Хүчээ ухаалгаар удирдаж, зорилгодоо чиглүүлнэ (эмэгтэй)."
+    ],
+    "minus": [
+      "Хэтэрхий эршүүлж дарангуйлал, хатуу ширүүн байдал; эсвэл бүрэн идэвхгүй — эр үүргээ биелүүлэхгүй.",
+      "Хариуцлагаас зайлсхийх, шийдвэр гаргахгүй, материал байдлаа сайжруулахгүй.",
+      "Өрхийн санхүүг эмэгтэйд наах.",
+      "Хэтэрхий эршил, хатуу, зөрүүд; бүхнийг өөр дээрээ үүрч явна (эмэгтэй).",
+      "Дамжуулж өгөх чадваргүй, хяналтаа тавих дургүй (эмэгтэй).",
+      "Эрчүүд рүү дайчин, түрэмгий өнгө аястай (эмэгтэй).",
+      "Сул талыг үл хүлээн зөвшөөрнө; эртэй өрсөлдөнө; харилцаа амаргүй (эмэгтэй).",
+      "Гэр бүлд «ахлагч», эр нь «эмэгтэй» үүрэгт шилжих магадлалтай (эмэгтэй).",
+      "Эгоизм, эрх дураараа зан, мөнгө шүтэх, өөрийгөө л бодох (эмэгтэй)."
+    ]
+  },
+  "5": {
+    "title": "5 АРКАН — Багш",
+    "plus": [
+      "Дүрэм журам, уламжлал чухал; хууль, нормыг чанд баримталж, бусдыг ч уриална.",
+      "Өөрөө дүрэм, арга зүй, хууль, урсгал санаачлагч байж чадна.",
+      "«Хаана ч хууль журам ноёрхог» — 5-ын уриа.",
+      "Тэвчээртэй, тууштай, нэр төртэй; тэвчээрлэл, өрөвч зан, шударга.",
+      "Найдвартай, хариуцлагатай; эрхэм багш, авторитетуудыг хүндэлнэ.",
+      "Нарийн шинжлэх ухаан, баталгаатай мэдлэгт дуртай; диплом, сертификатыг эрхэмлэнэ.",
+      "Логик, анализ өндөр; шинжлэх ухаанч хандлага.",
+      "Бусдын туршлагыг үр дүнтэй ашиглаж, дамжуулдаг — багш, сэтгэл зүйч.",
+      "«Үүрд суралцагч»: сургалт, ном, олон мэргэжил.",
+      "Гэр бүл, хүүхдийн хүмүүжил чухал; үлгэрлэсэн эцэг/эх.",
+      "Илтгэх чадвар сайтай; төвөгтэйг энгийнээр тайлбарлана.",
+      "Педантик, цаг барина; цэгцтэй, цэвэрч; бүтэц, схем гаргах дуртай."
+    ],
+    "minus": [
+      "Харах өнцөг нарийсах; өөрийн хүрээнээс бусдыг хэмжинэ; ихэрхүү байдал.",
+      "Өөр үзэлтэй хүмүүстэй маргахдаа хурц, «хоёр л өнцөг бий: минийх, буруутай нь» гэж үзнэ.",
+      "Гэр бүлээсээ салах, бие даахад бэрх; эцэг эхэд хэт найдсан.",
+      "Эцэг/эх байхаас татгалзах, хойшлуулах.",
+      "Бодол санаагаа тодорхой илэрхийлж чадахгүй; эмх замбараагүй байдал.",
+      "Мэдлэг хуримтлуулаад дамжуулахгүй; өөрөө өсөхөөс зугтана.",
+      "«Би хангалттай биш» гэдэг айдсаар багшлах үүргээс зугтах.",
+      "Авторитетыг үл хүндэлж, багш, дарга, эцгийг үгүйсгэнэ, өрсөлдөнө.",
+      "Өөрийн үнэлгээ савлана: «Би хамгийн ухаантай» ↔ «Би юу ч биш».",
+      "Өрсөлдөөнөөс айж, мэдээллээ «хэмнэнэ», нуун дарагдуулна."
+    ]
+  },
+  "6": {
+    "title": "6 АРКАН — Дурлагсад",
+    "plus": [
+      "Хайр бол амьдралын салшгүй хэсэг; хийх бүхнээ хайраар хийж, хайрлан хүлээж авна.",
+      "Хүмүүстэй харилцаа нэгдүгээрт; «хайрлах, хайрлуулж амьдрах» эрмэлзлэл.",
+      "Ашиг хардаггүйгээр бусдад үйлчлэх, туслах дуртай.",
+      "Эелдэг, найрсаг, харилцаа холбоо байгуулах, түншлэхдээ сайн.",
+      "Эмпати өндөр; хүний хэрэгцээг мэдэрч, түүнд тохирсон тус дэм өгнө.",
+      "Партнёршилд тэнцвэртэй; зөрчлийг зузаатгахгүй, эвлэрүүлнэ.",
+      "Дүр төрх, гоо зүйн мэдрэмж сайтай; урлаг, төгс төгөлдөрт тэмүүлнэ.",
+      "Артистик, амьдралаас таашаал авахыг мэддэг; анхаарал татах авьяастай.",
+      "Зөвхөн дуртай зүйлээ хийж чадна; олон хүнийг холбодог «сүлжээч».",
+      "Эмоц илэрхийлэл баялаг, дурламтгай."
+    ],
+    "minus": [
+      "Идеализм, «ягаан шил» — бодит бус төсөөлөл.",
+      "Хүүхдэрхүү, итгэмтгий; бусдад таарах гэж өөрийгөө алддаг.",
+      "Өөрт, бусдад өндөр шаардлага; хүмүүсийг янз бүрээр нь хүлээн авахад бэрх.",
+      "Өөрийгөө хайрлахад бэрх; өө сэвдээ шанална; төгс төгөлдөрт тулга.",
+      "Сэжигч, эмзэг; бусдын үнэлгээнээс хамаарах.",
+      "Импульсив эмоц, үйлдэл; хайр/үзэн ядалтын туйлшрал.",
+      "Хуучин харилцааны гэмтэл шинэ дээр нөлөөлнэ: айдас, сэрдэлт, атаархал.",
+      "Хүйтэн, истерик, хайхрамжгүй; жинхэнэ дотно байдлаас зайлсхийх.",
+      "Хайрыг манипуляц болгож ашиглах; ашиг харсан харилцаа.",
+      "Гуйж чаддаггүй; «төгс»-ийг хайж хамтрагчаа байнга сольдог.",
+      "Аль хэдийн дууссан харилцаанд зууралдах, ганцаардлаас айх.",
+      "Хүчтэй эмоц шаардах — тогтуун холбоонд залхах; зөрчил өдөөх хандлага.",
+      "Шийдвэргүй, сул дорой; сонголт, хариуцлагаас айх."
+    ]
+  },
+  "7": {
+    "title": "7 АРКАН — Сүйх Тэрэг",
+    "plus": [
+      "Зорилготой, хөдөлмөрч, амбицтай, өгөөмөр.",
+      "Үр дүнд чиглэсэн; стратеги, төлөвлөгөөгөөр ажиллана.",
+      "Өрнүүн, өөдрөг, хурдан хөдөлгөөнтэй; сахилга бат, тэсвэрээр амжилтад хүрнэ.",
+      "Өөрийгөө, эрхээ хамгаална; дотоод түргийг зөв зорилгод чиглүүлнэ.",
+      "Жолоо барих, аялах дуртай; санаагаараа бусдыг дагуулна.",
+      "Өөрийн хэрэгжилт чухал; «Боломжгүй зүйл үгүй».",
+      "Том амбиц, карьерийн зорилт; өрсөлдөгчөө хүндэтгэж тулалдана; уян хатан."
+    ],
+    "minus": [
+      "Өөртөө өршөөлгүй, бусдаас ч ихийг нэхнэ; амьдралаа «саад бэрх»-ээр дүүргэнэ.",
+      "Өөрийгөө голох, «болоогүй» гэдэг гомдол; хурдан уурлах, эмоц хяналт сул.",
+      "Тэвчээргүй, ширүүн, зөрчилч; хяналт, дарангуйлалд хэлбийх.",
+      "«Зөвхөн тулалдаж олдоно» гэх суурь итгэл; зам тээврийн асуудал, осол, хоцролт.",
+      "Амрах чадваргүй; хэт ачаалал → «зогсонги», өвчин, эвдрэл.",
+      "Эсрэг туйл: огт зорилгогүй, идэвхгүй, хариуцлагаас айх.",
+      "Анхаарал сарнисан; дуусгалгүй орхих; хөдөлгөөн их ч үр дүн бага.",
+      "Импульсив хурдан сонголт → урам хугаралт.",
+      "Саад бэрхэд сөхөрнө; өөрийн биш зорилгод хүч, цагаа алдах.",
+      "Хайр дурлалдаа ашиг, статус харж сонгох."
+    ]
+  },
+  "8": {
+    "title": "8 АРКАН — Шударга ёс",
+    "plus": [
+      "Өөртөө, бусдад шударга; худлыг шууд мэдэрнэ; тэнцвэрийн зөрчлийг анзаарах мэдрэмжтэй.",
+      "Хариуцлагатай, зоригтой; стресст хурдан, зөв шийдвэр гаргана.",
+      "Мэргэн дэнслэлт, зөвлөгөө өгөх, асуудлын «мөчир биш үндэс»-ийг харах.",
+      "Шалтгаан-үр дагаврын хуулийг ойлгож, амьдралдаа хэрэгжүүлнэ.",
+      "Стратеги, анализ, бодлоготой алхам; факт дээр ажиллана.",
+      "Хууль, ёс суртахуун, сүнслэг дүрмийг сахина."
+    ],
+    "minus": [
+      "Хаана ч оролцож «шударга ёс» тогтоох гэж дайрч, байдлыг дордуулна; эсвэл байнга гомдоллож, хэрүүл маргаан үүсгэнэ.",
+      "Хүн, нөхцөл байдлыг «хар/цагаан» гэж туйлшруулна; «би л зөв».",
+      "Бусдад шүүмжлэлтэй, хатуу; ууртай, өчүүхэн өдөөнд автан тэнцвэр алдана.",
+      "Өөрийн бурууг бусдад тохно; гэр бүл, хүүхдэд гэм бурууг тулгах.",
+      "Давтагдмал сөрөг сценари — хичээлээ аваагүй дохио.",
+      "«Зөв хүүхэд/сайн хүү» комплекс; эсвэл эсэргүүцэл.",
+      "Хуулийг зөрчих, амалснаа биелүүлэхгүй; сэтгэл хөдлөлөөр шийдвэр гаргаж алдана; эсвэл хэт логик, «хуягласан хүн».",
+      "Түгшүүр, өөрийгөө зэмлэх, төгс байх гэж туйлшрах."
+    ]
+  },
+  "9": {
+    "title": "9 АРКАН — Даяанч, Зөн билэгт",
+    "plus": [
+      "Мэргэн ухаантай, зөвлөгөө авахаар хүмүүс өөрөө ирдэг.",
+      "Нууцыг хадгалж, хил хязгаарыг хүндэлнэ; итгэл төрүүлнэ.",
+      "Сэтгэлийн эмч, биеийн эмч — эдгээх чадвартай.",
+      "Оройтож гэр бүл болох хандлагатай ч нэгнийг сонгосон бол үнэнч.",
+      "Дотроо мэдрэмж ихтэй ч ил гаргах нь бага; ганцаардлыг хайрлана.",
+      "Ганцаардалд хамгийн их ухаарал ирдэг; олсон хариугаа бусдад түгээнэ.",
+      "Өөрөө өөртөө дарга байх, ганцаар ажиллахад тохирно.",
+      "Нямбай, анхааралтай; шинжлэх ухаанч судалгаа, өөрийн арга зүй боловсруулах авьяастай.",
+      "Эрдэм номд дуртай; философи ярихад сайхан.",
+      "Оюун ухаанаар мөнгө олно.",
+      "Ахмадуудад хүндэтгэлтэй; аялагч, «утга учраа» хайгч."
+    ],
+    "minus": [
+      "Хэт тусгаарлах — жинхэнэ «отшельник» болох.",
+      "Итгэл алдан, дахин шархлахаас айж, өөрийгөө түгжинэ; харилцаанд ч ганцаардлыг мэдэрнэ.",
+      "Перфекционизм, шаардлага өндөр, ядаргаатай «зан»; зожиг, дотогшоо.",
+      "Өөрийгөө хайхрахгүй, аскет амьдрал; чинээлэг хүмүүсийг буруутгана → мөнгөний асуудал.",
+      "Цаашлаад харгис цинизм, харамч зан; мөнгөнд туйлшрах.",
+      "Бардамнал: «Би л ухаантай». Мэдлэгээ хуваалцахгүй.",
+      "Өөртөө итгэлгүй; онол мэддэг ч хэрэгжүүлэхгүй; хэрэгжээгүй онолын бөөгнөрөл.",
+      "Ахмадуудтай асуудал; хөгшрөлтөөс айх."
+    ]
+  },
+  "10": {
+    "title": "10 АРКАН — Азын хүрд",
+    "plus": [
+      "«Азтай» гэж тооцогдох; амьдралаар хөнгөн алхана.",
+      "Чухал мөчид зөв хаалга нээгдэж, хэрэгтэй хүмүүс таарна.",
+      "Зөн совин сайтай; өөрийн замаа мэдэрдэг.",
+      "Багаар ажиллахдаа сайн; эрч хүчтэй, найрсаг, өөрчлөлтөнд хурдан дасан зохицоно.",
+      "Позитив сэтгэлгээ, өглөгч сэтгэл; бусдын ч хувь тавиланд эерэг нөлөөтэй.",
+      "Адал явдалд дуртай аялагч; мөнгө олох, хөрөнгө оруулах «мэдрэмж»-тэй.",
+      "Дотоод байдал нь амьдралд хүчтэй нөлөөлдгийг ойлгодог; тав тух, чанартай амьдралд тэмүүлнэ."
+    ],
+    "minus": [
+      "Замнаасаа хазайвал «хархны тойрог» — утгагүй зүтгэл, үр дүнгүй давталт.",
+      "Ирээдүйн айдас, орлогын түгшүүр; туйлширсан хөдөлмөрч байдал ↔ залхуурал.",
+      "Шийдвэрээс айх, хариуцлагаас зугтах; эхэлснээ айдасаар орхих.",
+      "Өөрчлөлтөд эсэргүүцэл; өнгөрсөнд зууралдах; «би хэн бэ?» гэх тодорхойгүй байдал.",
+      "Итгэмтгий, бусдын тоглоомын хүү; мөнгөнд туйлширч эрсдэлтэй алхам.",
+      "Сүнслэг/материалын тэнцвэр алдагдан савлах.",
+      "«Бараа-мөнгө»-ний логикт гацах; өөртөө харамлах, тав тухаа үгүйсгэх.",
+      "Удам дамжсан мөнгө-ажлын сценарийг давтах."
+    ]
+  },
+  "11": {
+    "title": "11 АРКАН — Хүч",
+    "plus": [
+      "Эр зориг, тэсвэр, хат — хүнд цагийг давна.",
+      "Байр сууриа тод хэлж, хамгаална; инээмсэглэлтэй, өөдрөг, нээлттэй, манлайлагч.",
+      "Хөдөлмөрч, их даацтай; хурдан сурна; олон ажлыг зэрэг амжуулна; практикт шууд хэрэгжүүлнэ.",
+      "Бусдын потенциалыг нээж, «итгээрэй, хий!» гэж тэтгэнэ; олныг уриалан манлайлах нөлөөтэй.",
+      "Эрч дүүрэн; спорт, хөдөлгөөнд дуртай; биеэ тогтмол арчилна.",
+      "Эрүүл сексээс таашаал авах мэдрэмж."
+    ],
+    "minus": [
+      "Хүчээ гадагш түрэмгийлэл болгож эсвэл дотогш чиглүүлэн өөрийгөө хорлодог.",
+      "Хэт сурталчилсан ажилсаг байдал — өөрөөс зугтах «ажлын дон».",
+      "Энд-одоогийн таашаалыг мэдэрч чадалгүй, үр дүнд гүйх; бусдыг өөрийн хэмнэлд шахах.",
+      "Тэвчээргүй; хүлээхэд дургүй; ууртай, догшин.",
+      "Өөртөө итгэлгүйгийн туйл — зориг мохож, хагас дутуу хийж орхино; өөрийгөө хамгаалж чаддаггүй.",
+      "Эрүүл мэнд, хөдөлгөөнөө орхих; буруу хоол, дэглэм, муу зуршил → ядрал, дархлаа сул.",
+      "Хяналтгүй уур хилэн, бүдүүлэг байдал, хатуу ширүүн, буултгүй; «хүчийг хүчээр».",
+      "Дарамтлах, өөрийнхөө зөвийг тулгах; маргаантай, захирах хүсэл.",
+      "Сүнслэг/материалын задаргаа."
+    ]
+  },
+  "12": {
+    "title": "12 АРКАН — Дүүжлэгдсэн",
+    "plus": [
+      "Альтернатив, креатив хараа; шинэлэг санааг шүүж гаргах чадвар.",
+      "Онцгой зөвлөгөө, өөр өнцгөөс шийдэл өгнө.",
+      "Өгөх байр суурь, энэрэл нигүүлсэл; хүнийг тэр чигт нь хүлээн авах.",
+      "Багаасаа хувь хүнлэг, олноос өөр; «үгүй» гэж зөөлнөөр хэлж чадна.",
+      "Дуртай зүйл нь ашиг ч авчирч, хүмүүст үйлчилдэг — авах/өгөхийн тэнцвэрийг мэдэрдэг."
+    ],
+    "minus": [
+      "Хэт золиослогч — бусдын асуудлыг өөрийнхөөс урьтал болгоно; хамаарал, хамжлагад автах.",
+      "«Завсардаж» удаан гацах; нүүдэл хийх зориг дутна; бусдын асуудлаар халхавчилж өөрөөс зугтана.",
+      "«Үгүй» гэж хэлж чаддаггүй; хөдөлмөрөө үнэгүйдүүлж, хөлсгүй хөдөлмөрлөх.",
+      "Өөрийгөө хамгаалж чаддаггүй; дотроо шаналж, уур гомдол хуримтлуулна.",
+      "Бусдыг буруутгах; зөвхөн сөргийг харж эхлэх; эсвэл эсрэгээр — өрөвдөхүй, энэрэл дутмаг."
+    ]
+  },
+  "13": {
+    "title": "13 АРКАН — Үхэл, дахин төрөлт",
+    "plus": [
+      "Мистик мэдрэмжтэй, өөрчлөлтийн катализатор; бусдыг өөрчлөлтөд уриална.",
+      "Амьдрал нь мөчлөгөөр байнга шинэчлэгдэнэ; хуучныг суллан, шинэд итгэнэ.",
+      "Стрессэд хурдан, зөв шийдвэр; зоригтой, айдсыг давж гарна; аврагч, экстремал хандлага."
+    ],
+    "minus": [
+      "Олон зүйлийг зэрэг барьж тарамдах; эмх замбараагүй.",
+      "Уур хилэнгийн огцом байдал; «хил дээр» тоглох эрсдэлтэй авир.",
+      "Хатуу, хүйтэн үгийг шалтгаангүй хэлж шархлуулна.",
+      "Бусдыг хүчээр өөрчлөх гэж оролдох; эсвэл үхлийн айдас, гэр бүлийн эрүүл мэндийн хэт түгшүүр.",
+      "Өнгөрснийг тавьж чадахгүй зууралдах; өш хонзон.",
+      "Пассив байдал; өөрчлөлтөөс айж гацах — тэгвэл амьдрал «албадаж» өөрчилнө.",
+      "Өөрийгөө сүйтгэх зан — өөрийгөө зэмлэх, гэмтээх.",
+      "Төлөвлөгөө нурж, хохирол гарах нь дохио: чиглэлийг дахин бод."
+    ]
+  },
+  "14": {
+    "title": "14 АРКАН — Тэнцвэр",
+    "plus": [
+      "Дэлхий, хүнийг нарийн мэдэрч, сайн талыг нь тодруулж өгнө.",
+      "Ухаалаг, тогтуун, тэвчээртэй, даруу; хүсэл зорилго нь буянтай.",
+      "Дотоодоосоо тайвшрал түгээнэ — хаана ч очсон «далай намжина».",
+      "Дипломат, зөөлөн харилцаа; төвийг сахина, эвлэрүүлнэ.",
+      "Материал–сүнслэг–оюуны тэнцвэр; хэрэглээнд «хангалттай»-г эрхэмлэнэ.",
+      "Олон сонирхолтой; байгалийн аргаар эдгээх чадвартай.",
+      "Урлаг, гоо сайхны чиглэлд авьяастай."
+    ],
+    "minus": [
+      "Хэт мэдрэмтгий, эмзэглэл; өөр рүүгээ шургах.",
+      "Хэтрүүлэг: хоол, зуршил, донтолт; «одоо, даруй!» гэсэн тэвчээргүй хэрэглээ.",
+      "Дотоод хоосрол, өөртөө итгэл сул; бүтээлч байдал хаагдах.",
+      "Тэнцвэргүй дэглэм: ажлаар/амралтаар туйлших; эмоцоо хянахгүй → түгшүүр, нойргүйдэл.",
+      "Эсрэг туйл — хүйтэн, мэдрэмжгүй, тасархай байдал.",
+      "Дуртай биш ажлаар баригдах; сэтгэл ба оюуны зөрчил."
+    ]
+  },
+  "15": {
+    "title": "15 АРКАН — Чөтгөр",
+    "plus": [
+      "Асар их энерги, боломжийн багц; хөгжилтэй, компанийн хүн, авантюр сэтгэлгээтэй.",
+      "Зөөлөн, дүрэлзсэн, хайрандаа үнэнч; найдвартай бас адалч.",
+      "Мөнгө татах, бизнес азтай; олныг булаам харизм, илтгэх чадвар.",
+      "Хүний нууц хүсэл, хэрэгцээг унших мэдрэмж.",
+      "Байгалийн сексапил, соронзон чанар; амьдралын амтыг мэддэг гурман.",
+      "Олон нийтийг удирдах, нөлөөлөх чадал; худлыг мэдэрч «сканнердана».",
+      "Уян хатан; сүүдрийг ч гэрэл талд ашиглаж чадна; мөнгөний мэдрэмж сайн."
+    ],
+    "minus": [
+      "Хэт шунал, эгоизм; алдар нэр, секс, мөнгө, эрх мэдэлд донтох.",
+      "Материалд туйлших; хүмүүсийг хэрэгцээ мэт үзэх.",
+      "Түрэмгийлэл, хүчирхийллийн эрсдэл; бусдын сул талыг ашиглан манипуляц хийх.",
+      "Бүх төрлийн донтолт (тоглоом, хоол, соцсүлжээ, архи, мансууруулах, шоппинг, спорт, ажил, гаднах төрх).",
+      "Сексийн гаж хандлага эсвэл өөрийн сексапилыг үгүйсгэх.",
+      "Атаархал, өмчлөх хүсэл; утгагүй харилцааны олон солилцоо.",
+      "Хорон шогоор шархлуулах; цинизм, бардамнал, өширхөл.",
+      "Хууль зөрчих; мөнгөний асуудал — мэдрэмжгүй зарцуулалт."
+    ]
+  },
+  "16": {
+    "title": "16 АРКАН — Цамхаг",
+    "plus": [
+      "«Энд-одоод» баярлан амьдрах; дотоод тулгууртай, өөртөө хангалттай.",
+      "Хямралыг боломж болгож чадна; хүнд сорилд сөхрөхгүй.",
+      "Шинэчлэгч, тогтолцоог шинэчилж, том өөрчлөлт авчирна.",
+      "Зүрх зоригтой, уян хатан шийдвэр гаргана; манлайлагч энерги.",
+      "Стереотип эвдэж, шинэ сэтгэлгээг босгоно; нураасны дээрээс шинээр бүтээнэ.",
+      "Суурь мэдлэгийг туршлага болтол шингээх; ажил хөдөлмөрч, зохион байгуулагч."
+    ],
+    "minus": [
+      "Туйлшрал: бодлоос зугтах апати эсвэл дэндүү эрсдэгч авантюр — амьдралд эмх замбараагүй байдал авчирна.",
+      "Уур хилэнгийн дэлбэрэлт; өөрчлөлтийг няцаах, хатуу, гөжүүд.",
+      "Дотоод түгшүүр өндөр; хар бараан линзээр харах; алдагдсан, эвдэрсэн бүхнийг төвлөрөх.",
+      "Алдах айдсаар өөрөө бүхэнээ нураах; дуусгах чадвар сул.",
+      "Босоо тогтолцоог үгүйсгэнэ; бослого гаргаж өөрийн дэг журмыг тулгана.",
+      "Хаотик эрсдэлтэй эсвэл дотоод эсэргүүцэл, өөрчлөлтөөс зугтах.",
+      "Хуучин гомдлыг тавьж чаддаггүй; хамгийн хэрэгтэй өөрчлөлтөөс ч татгалзана.",
+      "Гэнэтийн ирц, осол, эвдрэлүүд — «Өөрөө өөрчлөгд!» гэсэн дохио."
+    ]
+  },
+  "17": {
+    "title": "17 АРКАН — Од",
+    "plus": [
+      "Анхнаасаа л «од» — авьяаслаг; бүтээлч биш мэргэжилд ч энэ чанар илэрнэ.",
+      "Зөн билэг, креатив сэтгэлгээ; экстрасенсор мэдрэмж ч байж болно.",
+      "«Одны замдаа» явбал юу ч хийсэн нэрд гарна; хөдөлмөрөөрөө амархан мөнгө олно.",
+      "Амьдралын аливааг хайрлан, бүтээлчээр ханддаг.",
+      "Өөртөө итгэл, өөрийгөө хайрлах, тэнгэртэй холбоо — амжилтын түлхүүр.",
+      "Найрсаг, нээлттэй, үнэнч найз; харилцахад уран илэрхийлэлтэй, хөгжилтэй.",
+      "Ижилгүй имиж, онцлог гаргалгаа; хүмүүсийг татна; хошин шогийн мэдрэмжтэй.",
+      "Эстетик мэдрэмж өндөр; гоё сайхныг эрхэмлэнэ."
+    ],
+    "minus": [
+      "Өөрийгөө хүлээн зөвшөөрөхөд бэрх; ичимхий, дотогшоо; авьяасаа хөгжүүлэхгүй «үл танигдсан суутан» болж хувирна.",
+      "«Хоббигоо» ажил болгохгүй; дургүй ажилдаа явдаг «саарал хулгана».",
+      "Эсрэгээр — хэт бардам, «одны өвчин» тусах.",
+      "Хайр, найрамдлыг үгүйсгэнэ; хүйтэн, зай барина; итгэлцэлд бэрх.",
+      "Бренд, тансаглалд хэт автана; сэтгэлийн хямрал, апати, сул дорой зан.",
+      "Нийгэмд таалагдах гэж маск зүүнэ; мөрөөдөлдөө төөрч, бодит амьдралыг орхино."
+    ]
+  },
+  "18": {
+    "title": "18 АРКАН — Сар",
+    "plus": [
+      "Мистик, нууцлаг, татахуйц; баялаг дотоод ертөнц.",
+      "Зөн совин хурц; зүүдээр мэдээлэл авна; дотоод дуугаа сонсоно.",
+      "Сарын мөчлөгтэй холбоо өндөр; бодол материалчлах хүчтэй.",
+      "Мэдээллийг хурдан шингээж боловсруулна; эмпатитай, халамжтай.",
+      "Байгаль, ойр дотныхонд эхийн хайр шиг халамж; гэр орноо дулаан, тухтай болгоно.",
+      "Сентименталь; айдсаа давж хийж чадна — «нүд айна, гар хийдэг»."
+    ],
+    "minus": [
+      "Айдас, эргэлзээ давамгай; өөрөө «түгшүүр бүтээнэ».",
+      "Мнительность, сэжигч; депресс, истерик, эмоцийн савлагаа; маргаан, зөрчил.",
+      "Харам, хорсолтой; залхуу, идэвхгүй; хариуцлагаас айна.",
+      "Өөрийн «бодит бус ертөнц»-д зугтах; донтолтууд.",
+      "Худал, цуурхал, мэдээлэл гуйвуулах; хоёр амьдрал; үнэн үг хэлүүлэхэд бэрх.",
+      "Эхтэйгээ хэт хамаарал; эх болох айдас."
+    ]
+  },
+  "19": {
+    "title": "19 АРКАН — Нар",
+    "plus": [
+      "Гэрэл түгээж, чадвараа бусдад хайрлана; «юуг өгнө, түүнээс өснө».",
+      "Хүчирхэг энерги; хүмүүсийг татна; анхаарлын төвд хурдан гарна.",
+      "Том зорилго тавьж хүчтэй хөдөлнө; өөдрөг, хүүхдэрхүү баяр баясгалан.",
+      "Бусдын аз жаргалд хувь нэмэр оруулна — буяны ажил, олон нийтийн манлайлал.",
+      "Харизматик, зоригтой, өөрийн байр сууриа ил тод илэрхийлнэ; алдаагаа хүлээн зөвшөөрч засч чадна.",
+      "Олон талын авьяастай; олон нийтийн хүлээн зөвшөөрөл чухал."
+    ],
+    "minus": [
+      "Нэг зүйлд хэт төвлөрч бүх энергээ тийшээ асгах; түрэмгийлэл, хяналт, дарангуйлал.",
+      "Сонсох чадвар дутмаг; ихэмсэг, эгоцентрик; шүүмжлэлд эмзэг — дайрах эсвэл өөрийгөө шатаах.",
+      "Амлалтаар дүүрэн шоу; сул хянамгай; энергиэ удирдаж чадахгүйгээс «шаталт».",
+      "Өөрийгөө хэт/бага үнэлэх; амрах, сэргээх чадваргүй; эсвэл зорилгогүй тансаглал.",
+      "Том хариуцлагаас айх; өөрийгөө үгүйсгэх; нийгэмд байр сууриа алдах."
+    ]
+  },
+  "20": {
+    "title": "20 АРКАН — Шүүлт, Удам",
+    "plus": [
+      "Урам нэгтгэгч, удам судраа холбож, уламжлалыг сэргээдэг.",
+      "Эцэг эх, төрөл төрөгсдөө хүндэлж, нягт холбоотой; тусламж өгөх, авах урсгал нээлттэй.",
+      "Зүүдэнд талийгаачдын дохио ирэх; удам угсааны сөрөг хөтөлбөрийг таньж, трансформац хийх эрмэлзэл.",
+      "Амьдралын хуулийг гүн ойлгоно; нууцлагт сонирхолтой.",
+      "Ажилсаг, өөрийгөө бүрэн зориулдаг; урт хараатай стратегич.",
+      "Шударга, шүүлт хийхгүй, мэргэн дүгнэлт гаргана; эмчлэх, чиг заах «супер чадвар»."
+    ],
+    "minus": [
+      "Ойр дотныхондоо ширүүн, тэвчээргүй; бүхнийг шүүмжилдэг.",
+      "Гэр бүлийн холбоонд туйлшрал: хэт хамаарал ↔ тасархай байдал, бүр шүүх маргаан хүртэл.",
+      "Эцэг эхдээ гомдол хуримтлуулах; улс, үндэстэн, угсааг жигших гэх мэт экстремизм.",
+      "Гэр бүлийн үнэт зүйлийг үгүйсгэх; эсвэл хэт хяналт, дарангуйлал.",
+      "Материал ↔ сүнслэгийн аль нэгэнд хэт хэлбийх; идэвхгүй, хариуцлагагүй байр суурь.",
+      "«Их зорилгын» нэрийн дор үймээн самуунд түлхэх."
+    ]
+  },
+  "21": {
+    "title": "21 АРКАН — Дэлхий, Эрх чөлөө",
+    "plus": [
+      "Энх тогтоогч, дипломат; нээлттэй, итгэдэг, найрсаг.",
+      "Бүх шашин, үндэстнийг ах дүүс мэт хүлээн авна; аялж, хурдан дасан зохицно.",
+      "Дэлхийн түвшний асуултад санаа тавина; олон хэл сурах авьяастай.",
+      "Хаана ч өөрийн гэр мэт; мэдээлэл хурдан шингээж, шинэ тренд рүү тэмүүлнэ.",
+      "«Энд-одоод амьдрах»; өөртөө итгэлтэй, эрүүл амбицтай — глобал түвшинд зорьдог."
+    ],
+    "minus": [
+      "«Одоо, бүхнийг!» — тэвчээргүй; дуусгалгүй орхих; боломжгүй бол шууд болино.",
+      "Нэгдлийн оронд хагарал үүсгэх; материалд гацах эсвэл бодит амьдралаас тасрах.",
+      "Хэт өөрийг золиослох; эсвэл бүхнийг үгүйсгэн дайсагнах.",
+      "Хил зааг тогтоох асуудал; өөрийгөө дотоод «шорон»-д хорих.",
+      "Дундын хувилбар үгүй — «багаар ханах» эсвэл «бүгдийг хүсэх»; байгаа зүйлээ үнэлэхгүй."
+    ]
+  },
+  "22": {
+    "title": "22 АРКАН — Шогт - Чөлөөт бүтээлч хүүхдийн архетип",
+    "plus": [
+      "Сониуч зан, догдлол, хүүхдэрхүү гайхшрал.",
+      "Хөнгөн, идэвхтэй; материалд баригдахгүй; өнгөрснийг үүрч явдаггүй.",
+      "Гайхам санаа, креатив сэтгэлгээ; дүрээ солин тоглож чадна; өөрийгөө шоолж инээнэ.",
+      "Гомдоллож, амьдралд гутарч суудаггүй; хүүхдүүдтэй долгион нэг давалгаанд.",
+      "Зөн совин хүчтэй; «урсгал»-д амьдарч, зүйлс өөрөө таарах.",
+      "Хүмүүстэй амархан дотносно; шинэ замыг зоригтой нээнэ."
+    ],
+    "minus": [
+      "Хуулийг үл тоомсорлох, хязгаар үгүй авир; хариуцлагаас зугтах.",
+      "Бусдын хэрэгцээг үл тоох; амлалтаа биелүүлэхгүй; өнөөдрөөр амьдарч, ирээдүйгээ орхино.",
+      "Инфантил, тэнэг зориглолт, хэт итгэмтгий; олон удаа мэхлэгдэж болно.",
+      "Авантюр, эрсдэлтэй «зугаа»; амьдрал эмх замбараагүйжинэ.",
+      "Бодит байдлаас тасарч «жүжиг»-т автах; мөнгө, атаархал, согтууруулах бодисын боол болох хүртэл.",
+      "Хүүхдийн асуудал: уур бухимдал төрөх, эсвэл хүүхэдтэй болохоос татгалзах.",
+      "Шинэ зүйлд дургүй, өөрчлөлтөөс айх; спонтан шийдвэр гаргах ур чадваргүй."
+    ]
+  }
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────
+const computed = {};
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+function reduceTo22(n) {
+  while (n > 22) {
+    n = String(n).split('').reduce(function(s,d){return s+parseInt(d);},0);
+  }
+  return n;
+}
+
+function setAllByKey(key, val) {
+  computed[key] = val;
+  document.querySelectorAll('[data-key="'+key+'"]').forEach(function(el){
+    el.textContent = val;
+  });
+}
+
+// ─── TOOLTIP ──────────────────────────────────────────────────────────────
+var ttEl = document.getElementById('tooltip');
+var ttTarget = null;
+
+function buildTTHTML(energyNum) {
+  var d = ENERGY_DESC[energyNum];
+  if (!d) return '<h4>Энергия ' + energyNum + '</h4><p>Описание будет добавлено позже.</p>';
+  var h = '<h4>' + d.title + '</h4>';
+  h += '<div class="sec">✅ Эерэг тал</div><ul>';
+  d.plus.forEach(function(p){h+='<li>'+p+'</li>';});
+  h += '</ul><div class="sec">⚠️ Сөрөг тал</div><ul>';
+  d.minus.forEach(function(m){h+='<li>'+m+'</li>';});
+  h += '</ul>';
+  return h;
+}
+
+function showTT(energyNum, el) {
+  if (!energyNum) return;
+  ttEl.innerHTML = buildTTHTML(energyNum);
+  ttEl.classList.add('visible');
+  positionTT(el);
+  ttTarget = el;
+}
+
+function hideTT() {
+  ttEl.classList.remove('visible');
+  ttTarget = null;
+}
+
+function positionTT(el) {
+  var rect = el.getBoundingClientRect();
+  var scrollY = window.scrollY || window.pageYOffset;
+  var scrollX = window.scrollX || window.pageXOffset;
+  var tw = 360;
+  var tx = rect.right + scrollX + 8;
+  if (tx + tw > window.innerWidth + scrollX - 10) {
+    tx = rect.left + scrollX - tw - 8;
+  }
+  if (tx < scrollX + 4) tx = scrollX + 4;
+  var ty = rect.top + scrollY;
+  ttEl.style.left = tx + 'px';
+  ttEl.style.top  = ty + 'px';
+}
+
+// ─── ATTACH TOOLTIPS TO ALL .star-point ELEMENTS ──────────────────────────
+function attachTooltips() {
+  document.querySelectorAll('.star-point').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      var key = this.getAttribute('data-key');
+      var val = computed[key];
+      if (val !== undefined && val !== null) showTT(val, this);
+    });
+    el.addEventListener('mouseleave', hideTT);
+  });
+}
+
+// ─── INPUT FORMATTING ─────────────────────────────────────────────────────
+var inputEl = document.getElementById('birthdate');
+var btnEl   = document.getElementById('calcBtn');
+
+inputEl.addEventListener('input', function() {
+  var v = this.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.slice(0,2) + '.' + v.slice(2);
+  if (v.length >= 5) v = v.slice(0,5) + '.' + v.slice(5);
+  this.value = v.slice(0,10);
+  btnEl.classList.toggle('visible', this.value.length === 10);
+});
+inputEl.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && this.value.length === 10) calculate();
+});
+inputEl.focus();
+
+// ─── TAB SWITCHING ────────────────────────────────────────────────────────
+function showTab(id, btnElArg) {
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  btnElArg.classList.add('active');
+}
+
+// ─── MAIN CALCULATION ─────────────────────────────────────────────────────
+function calculate() {
+  var parts = document.getElementById('birthdate').value.split('.');
+  var day   = parseInt(parts[0]);
+  var month = parseInt(parts[1]);
+  var yearDigitsSum = parts[2].split('').reduce(function(s,d){return s+parseInt(d);},0);
+  var year  = reduceTo22(yearDigitsSum);
+
+  // 5 corner points of the star
+  var sp1 = month;                                  // point 1 = month (not reduced)
+  var sp2 = year;                                   // point 2 = year
+  var sp5 = reduceTo22(day);                        // point 5 = day
+  var sp3 = reduceTo22(sp1 + sp2 + sp5);           // point 3
+  var sp4 = reduceTo22(sp1 + sp2 + sp3 + sp5);     // point 4
+  var sp6 = reduceTo22(sp1 + sp2 + sp3 + sp4 + sp5); // center
+
+  // Mid-edge points
+  var sp8  = reduceTo22(sp1 + sp5);
+  var sp10 = reduceTo22(sp1 + sp2);
+  var sp20 = reduceTo22(sp3 + sp2);
+  var sp21 = reduceTo22(sp3 + sp4);
+  var sp19 = reduceTo22(sp5 + sp4);
+
+  // Inner points
+  var sp7  = reduceTo22(sp8  + sp5);
+  var sp22 = reduceTo22(sp19 + sp5);
+  var sp12 = reduceTo22(sp19 + sp8);
+  var sp17 = reduceTo22(sp8  + sp1);
+  var sp18 = reduceTo22(sp10 + sp1);
+  var sp9  = reduceTo22(sp8  + sp10);
+  var sp13 = sp9;
+  var sp11 = reduceTo22(sp2  + sp10);
+  var sp27 = reduceTo22(sp2  + sp20);
+  var sp14 = reduceTo22(sp20 + sp10);
+  var sp26 = reduceTo22(sp3  + sp20);
+  var sp25 = reduceTo22(sp3  + sp21);
+  var sp16 = reduceTo22(sp21 + sp20);
+  var sp24 = reduceTo22(sp4  + sp21);
+  var sp23 = reduceTo22(sp19 + sp4);
+  var sp15 = reduceTo22(sp19 + sp21);
+
+  // Sphere composites
+  var sp28 = reduceTo22(sp22 + sp7);
+  var sp29 = reduceTo22(sp5  + sp12);
+  var sp30 = reduceTo22(sp17 + sp18);
+  var sp31 = reduceTo22(sp1  + sp9);
+  var sp32 = reduceTo22(sp11 + sp27);
+  var sp33 = reduceTo22(sp2  + sp14);
+  var sp34 = reduceTo22(sp26 + sp25);
+  var sp35 = reduceTo22(sp3  + sp16);
+  var sp36 = reduceTo22(sp23 + sp24);
+  var sp37 = reduceTo22(sp4  + sp15);
+
+  // Soul code
+  var new1 = reduceTo22(sp5 + sp2 + sp1 + sp3 + sp4);
+  var new2 = reduceTo22(sp8 + sp10 + sp20 + sp19 + sp21);
+  var new3 = reduceTo22(new1 + new2);
+
+  setAllByKey('month', sp1);
+  setAllByKey('year',  sp2);
+  setAllByKey('day',   sp5);
+  setAllByKey('sp3',   sp3);
+  setAllByKey('sp4',   sp4);
+  setAllByKey('sp6',   sp6);
+  setAllByKey('sp7',   sp7);
+  setAllByKey('sp8',   sp8);
+  setAllByKey('sp9',   sp9);
+  setAllByKey('sp10',  sp10);
+  setAllByKey('sp11',  sp11);
+  setAllByKey('sp12',  sp12);
+  setAllByKey('sp13',  sp13);
+  setAllByKey('sp14',  sp14);
+  setAllByKey('sp15',  sp15);
+  setAllByKey('sp16',  sp16);
+  setAllByKey('sp17',  sp17);
+  setAllByKey('sp18',  sp18);
+  setAllByKey('sp19',  sp19);
+  setAllByKey('sp20',  sp20);
+  setAllByKey('sp21',  sp21);
+  setAllByKey('sp22',  sp22);
+  setAllByKey('sp23',  sp23);
+  setAllByKey('sp24',  sp24);
+  setAllByKey('sp25',  sp25);
+  setAllByKey('sp26',  sp26);
+  setAllByKey('sp27',  sp27);
+  setAllByKey('sp28',  sp28);
+  setAllByKey('sp29',  sp29);
+  setAllByKey('sp30',  sp30);
+  setAllByKey('sp31',  sp31);
+  setAllByKey('sp32',  sp32);
+  setAllByKey('sp33',  sp33);
+  setAllByKey('sp34',  sp34);
+  setAllByKey('sp35',  sp35);
+  setAllByKey('sp36',  sp36);
+  setAllByKey('sp37',  sp37);
+  setAllByKey('new1',  new1);
+  setAllByKey('new2',  new2);
+  setAllByKey('new3',  new3);
+
+  // Text below star (energy of the day = sp5)
+  var textEl = document.getElementById('text-container');
+  var d = ENERGY_DESC[sp5];
+  if (d) {
+    var h = '<strong>' + d.title + '</strong><br/><br/>';
+    h += '<strong>Эерэг илрэл</strong><br/><ul>';
+    d.plus.forEach(function(p){h+='<li>'+p+'</li>';});
+    h += '</ul><strong>Сөрөг илрэл</strong><br/><ul>';
+    d.minus.forEach(function(m){h+='<li>'+m+'</li>';});
+    h += '</ul>';
+    textEl.innerHTML = h;
+  } else {
+    textEl.innerHTML = '';
+  }
+
+  buildOuterRing(sp5, sp1, sp2, sp3, sp4, sp8, sp10, sp19, sp20, sp21);
+
+  document.getElementById('inputSection').style.display = 'none';
+  document.getElementById('mainContent').classList.add('visible');
+
+  attachTooltips();
+}
+
+// ─── OUTER RING ───────────────────────────────────────────────────────────
+// Replicates the original jQuery code exactly:
+//   updateElementById(id, value) sets $('#id').text(value) on DOM elements
+//   getElementByIdValue(id) returns parseInt($('#id').text())
+// Here we use a ringVals{} object instead of DOM elements.
+function buildOuterRing(sp5, sp1, sp2, sp3, sp4, sp8, sp10, sp19, sp20, sp21) {
+  var circle = document.getElementById('circle');
+  circle.querySelectorAll('.outer-point,.ring-label,.ring-number').forEach(function(e){e.remove();});
+
+  // --- Compute all ring values using the EXACT original sequence ---
+  var rv = {};  // rv[id] = value, matching original's $('#id').text(value)
+
+  function r22(n){ return reduceTo22(n); }
+  function g(k){ return rv[k] || 0; }
+
+  // Level 0: primary anchors at age multiples of 5
+  rv[0]  = r22(sp5);
+  rv[5]  = r22(sp5 + sp8);
+  rv[10] = sp8;
+  rv[15] = r22(sp1 + sp8);
+  rv[20] = sp1;
+  rv[25] = r22(sp10 + sp1);
+  rv[30] = sp10;
+  rv[35] = r22(sp10 + sp2);
+  rv[40] = sp2;
+  rv[45] = r22(sp2 + sp20);
+  rv[50] = sp20;
+  rv[55] = r22(sp20 + sp3);
+  rv[60] = sp3;
+  rv[65] = r22(sp3 + sp21);
+  rv[70] = sp21;
+  rv[75] = r22(sp21 + sp4);
+  rv[80] = sp4;
+  rv[85] = r22(sp19 + sp4);
+  rv[90] = sp19;
+  rv[95] = r22(sp5 + sp19);
+
+  // Level 1: midpoints between adjacent primaries
+  rv[2]  = r22(g(5)  + g(0));
+  rv[7]  = r22(g(5)  + g(10));
+  rv[12] = r22(g(15) + g(10));
+  rv[17] = r22(g(15) + g(20));
+  rv[22] = r22(g(25) + g(20));
+  rv[27] = r22(g(25) + g(30));
+  rv[32] = r22(g(35) + g(30));
+  rv[37] = r22(g(35) + g(40));
+  rv[42] = r22(g(45) + g(40));
+  rv[47] = r22(g(45) + g(50));
+  rv[52] = r22(g(55) + g(50));
+  rv[57] = r22(g(55) + g(60));
+  rv[62] = r22(g(65) + g(60));
+  rv[67] = r22(g(65) + g(70));
+  rv[72] = r22(g(75) + g(70));
+  rv[77] = r22(g(75) + g(80));
+  rv[82] = r22(g(85) + g(80));
+  rv[87] = r22(g(85) + g(90));
+  rv[92] = r22(g(95) + g(90));
+  rv[97] = r22(g(95) + g(0));
+
+  // Level 2
+  rv[1]  = r22(g(2)  + g(0));
+  rv[6]  = r22(g(7)  + g(5));
+  rv[11] = r22(g(12) + g(10));
+  rv[16] = r22(g(17) + g(15));
+  rv[21] = r22(g(22) + g(20));
+  rv[26] = r22(g(27) + g(25));
+  rv[31] = r22(g(32) + g(30));
+  rv[36] = r22(g(37) + g(35));
+  rv[41] = r22(g(42) + g(40));
+  rv[46] = r22(g(47) + g(45));
+  rv[51] = r22(g(52) + g(50));
+  rv[56] = r22(g(57) + g(55));
+  rv[61] = r22(g(62) + g(60));
+  rv[66] = r22(g(67) + g(65));
+  rv[71] = r22(g(72) + g(70));
+  rv[76] = r22(g(77) + g(75));
+  rv[81] = r22(g(82) + g(80));
+  rv[86] = r22(g(87) + g(85));
+  rv[91] = r22(g(92) + g(90));
+  rv[96] = r22(g(95) + g(97));
+
+  // Level 3
+  rv[3]  = r22(g(2)  + g(5));
+  rv[8]  = r22(g(7)  + g(10));
+  rv[13] = r22(g(12) + g(15));
+  rv[18] = r22(g(17) + g(20));
+  rv[23] = r22(g(22) + g(25));
+  rv[28] = r22(g(27) + g(30));
+  rv[33] = r22(g(32) + g(35));
+  rv[38] = r22(g(37) + g(40));
+  rv[43] = r22(g(42) + g(45));
+  rv[48] = r22(g(47) + g(50));
+  rv[53] = r22(g(52) + g(55));
+  rv[58] = r22(g(57) + g(60));
+  rv[63] = r22(g(62) + g(65));
+  rv[68] = r22(g(67) + g(70));
+  rv[73] = r22(g(72) + g(75));
+  rv[78] = r22(g(77) + g(80));
+  rv[83] = r22(g(82) + g(85));
+  rv[88] = r22(g(87) + g(90));
+  rv[93] = r22(g(92) + g(95));
+  rv[98] = r22(g(0)  + g(97));
+
+  // --- Place dots, labels, numbers on the circle ---
+  // Exact replication of the original JS loop:
+  //   for (let i = 0; i < 80; i++)
+  //     isLarge = i%4===0
+  //     if (isLarge): currentAngle = largeAngles[currentAngleIndex]; currentAngleIndex++
+  //     else: currentAngle += smallPointAngleSteps[currentAngleIndex]
+  //       (currentAngleIndex was ALREADY incremented at the last large point)
+  //   year = floor(i/4)*5 + (i%4)  => skips 4,9,14,...,99
+
+  var radius = 45;
+  var largeAngles = [
+    351+180, 8+180, 27+180, 48+180, 69+180, 90+180, 111+180, 132+180,
+    153+180, 172+180, 187+180, 202+180, 217+180, 236+180, 252+180,
+    270+180, 288+180, 306+180, 321+180, 336+180
+  ];
+  var n = largeAngles.length; // 20
+
+  // Correct inter-segment steps: (largeAngles[(i+1)%n] - largeAngles[i]) / 4
+  // This fixes the original bug where the last step used a wrong wrap formula giving 93.75
+  // instead of the correct (531-516)/4 = 3.75
+  var smallSteps = [];
+  for (var si = 0; si < n; si++) {
+    smallSteps.push((largeAngles[(si+1)%n] - largeAngles[si]) / 4);
+  }
+  // smallSteps[0] = (188-531)/4 = -85.75  (used for years 1,2,3 in original — skipped here)
+  // smallSteps[19] = (531-516)/4 = 3.75   (fixed: was 93.75 in original)
+
+  var currentAngleIndex = 0;
+  var currentAngle = largeAngles[0];
+
+  for (var i = 0; i < 80; i++) {
+    var isLarge = (i % 4 === 0);
+
+    if (isLarge) {
+      // Set angle from table, then advance index
+      currentAngle = largeAngles[currentAngleIndex];
+      currentAngleIndex = (currentAngleIndex + 1) % n;
+    } else {
+      // For small points: use smallSteps[currentAngleIndex] (already incremented).
+      // Special case: when currentAngleIndex wraps to 0 (after last large point, year 95),
+      // use smallSteps[n-1] so years 96,97,98 step correctly toward 0/100.
+      var stepIdx = (currentAngleIndex === 0) ? n-1 : currentAngleIndex;
+      currentAngle += smallSteps[stepIdx];
+    }
+
+    // year_label: floor(i/4)*5 + (i%4) — same formula as original
+    // This naturally skips 4, 9, 14, 19, ...
+    var yearLabel = Math.floor(i/4)*5 + (i%4);
+
+    var angleRad = currentAngle * Math.PI / 180;
+    var x  = radius + radius * Math.cos(angleRad);
+    var y  = radius + radius * Math.sin(angleRad);
+
+    // Dot
+    var dot = document.createElement('div');
+    dot.className = 'outer-point ' + (isLarge ? 'large' : 'small');
+    dot.style.left = 'calc(' + x + 'vmin - ' + (isLarge ? 0.5 : 0.125) + 'vmin)';
+    dot.style.top  = 'calc(' + y + 'vmin - ' + (isLarge ? 0.5 : 0.125) + 'vmin)';
+    circle.appendChild(dot);
+
+    // Age label (outside ring)
+    var lOff  = isLarge ? 4 : 2;
+    var lx = radius + (radius + lOff) * Math.cos(angleRad);
+    var ly = radius + (radius + lOff) * Math.sin(angleRad);
+    var lbl = document.createElement('div');
+    lbl.className = 'ring-label' + (isLarge ? ' large' : '');
+    lbl.style.left = lx + 'vmin';
+    lbl.style.top  = ly + 'vmin';
+    lbl.textContent = isLarge ? (yearLabel === 0 ? '0/100' : yearLabel) + ' ЛЕТ'
+                               : yearLabel + '-' + (yearLabel+1);
+    circle.appendChild(lbl);
+
+    // Energy number (inside ring) — hover tooltip
+    var nOff = isLarge ? 4 : 2;
+    var nx = radius + (radius - nOff) * Math.cos(angleRad);
+    var ny = radius + (radius - nOff) * Math.sin(angleRad);
+    var num = document.createElement('div');
+    num.className = 'ring-number' + (isLarge ? ' large' : ' small');
+    num.style.left = nx + 'vmin';
+    num.style.top  = ny + 'vmin';
+    var energyVal = rv[yearLabel] || 0;
+    num.textContent = energyVal;
+    (function(ev, el){
+      el.addEventListener('mouseenter', function(){showTT(ev, el);});
+      el.addEventListener('mouseleave', hideTT);
+    })(energyVal, num);
+    circle.appendChild(num);
+  }
+}
+</script>
+</body>
+</html>
